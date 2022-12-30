@@ -30,6 +30,31 @@ info:
   title: Url Shortener
   version: "1.0"
 paths:
+  /{url_id}:
+    get:
+      description: redirect url
+      parameters:
+      - description: url_id
+        in: path
+        name: url_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "302":
+          description: Found
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/resHandler.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/resHandler.ErrResponse'
+      summary: redirect url
+      tags:
+      - urls
   /api/v1/urls:
     post:
       consumes:
