@@ -5,8 +5,12 @@ import (
 	"urlshortener/api/redirect"
 	"urlshortener/api/urls"
 
+	_ "urlshortener/docs"
+
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 func init() {
@@ -14,8 +18,17 @@ func init() {
 		fmt.Println("Error loading .env file")
 	}
 }
+
+// @title Url Shortener
+// @version 1.0
+// @description Url Shortener API.
+// @host localhost:8080
 func main() {
 	app := gin.Default()
+	if mode := gin.Mode(); mode == gin.DebugMode {
+		url := ginSwagger.URL(fmt.Sprintf("http://localhost:%d/swagger/doc.json", 8080))
+		app.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
+	}
 	app.Use(gin.Recovery())
 	redirect.RouteUrls(app)
 	urls.RouteUrls(app)
