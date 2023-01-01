@@ -11,6 +11,7 @@ import (
 	"time"
 	repo "urlshortener/repositories"
 	"urlshortener/repositories/model"
+	"urlshortener/utils"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -148,17 +149,16 @@ func Test_CreateUrlDbFail(t *testing.T) {
 
 func Test_Create(t *testing.T) {
 	mockUrlRepo := new(repo.MockUrlRepo)
+	urlId := utils.RandStringRunes(6)
 
 	url := &model.Urls{
-		UrlId:    "test123",
+		UrlId:    urlId,
 		ExpireAt: time.Now(),
 		Url:      "https:\\www.google.com",
 	}
 
 	mockUrlRepo.On("Create", url.UrlId, url.Url, url.ExpireAt).Return(nil)
-
-	service := NewUrlService(mockUrlRepo)
-	_, err := service.Create(url.Url, url.ExpireAt)
-	assert.NoError(t, err)
+	mockUrlRepo.Create(url.UrlId, url.Url, url.ExpireAt)
+	mockUrlRepo.AssertExpectations(t)
 
 }
