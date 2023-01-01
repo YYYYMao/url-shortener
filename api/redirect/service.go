@@ -13,6 +13,11 @@ import (
 
 var expirePeriod = 7 * 24 * time.Hour
 
+type cacheKey struct {
+	Exp int64
+	Url string
+}
+
 type redirectService struct {
 	UrlRepo repo.UrlRepository
 	Cache   redis.Repository
@@ -37,24 +42,23 @@ func (s *redirectService) GetUrl(ctx context.Context, urlId string) (string, err
 	}
 
 	if result, err := s.Cache.Get(ctx, urlId); err == nil {
-		data := make(map[string]interface{})
+		var data cacheKey
 		if unmarshalErr := json.Unmarshal([]byte(result), &data); unmarshalErr == nil {
-			if v, ok := data["exp"].(int64); ok {
-				if v > now {
-					return data["url"].(string), nil
-				} else {
-					return "", errors.New("url expired")
-				}
+			v := data.Exp
+			if v > now {
+				return data.Url, nil
+			} else {
+				return "", errors.New("url expired")
 			}
 		}
 	}
 
 	if result, err := s.UrlRepo.SelectByUrlId(urlId); err == nil {
-
 		if result.ExpireAt.Unix() > now {
-			data := make(map[string]interface{})
-			data["exp"] = result.ExpireAt.Unix()
-			data["url"] = result.Url
+			data := cacheKey{
+				Exp: result.ExpireAt.Unix(),
+				Url: result.Url,
+			}
 
 			if value, err := json.Marshal(data); err == nil {
 				if insertErr := s.Cache.Set(ctx, result.UrlId, value, expirePeriod); insertErr != nil {
