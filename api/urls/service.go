@@ -1,53 +1,30 @@
 package urls
 
 import (
-	"net/http"
-	"os"
+	"errors"
 	"time"
 	repo "urlshortener/repositories"
 	"urlshortener/utils"
-	"urlshortener/utils/resHandler"
-
-	"github.com/gin-gonic/gin"
 )
 
-type UrlParam struct {
-	Url      string    `json:"url" binding:"required"`
-	ExpireAt time.Time `json:"expireAt" binding:"required"`
+type urlService struct {
+	UrlRepo repo.UrlRepository
 }
 
-type UrlResponse struct {
-	UrlId    string `json:"id"`
-	ShortUrl string `json:"shortUrl"`
+type UrlService interface {
+	Create(url string, expireAt time.Time) (string, error)
 }
 
-// @Summary create short url
-// @Schemes
-// @Description create short url
-// @Tags urls
-// @Accept json
-// @Produce json
-// @param data body UrlParam true "url and expire time 2022-12-30T15:03:43.4Z"
-// @Success 200 {object} UrlResponse
-// @Success 400 {object} resHandler.ErrResponse
-// @Success 500 {object} resHandler.ErrResponse
-// @Router /api/v1/urls [post]
-func CreateUrl(c *gin.Context) {
-	var param UrlParam
-	if err := c.BindJSON(&param); err != nil {
-		resHandler.SendResponse(c, http.StatusBadRequest, err, nil)
-		return
+func NewUrlService(urlRepo repo.UrlRepository) UrlService {
+	return &urlService{
+		UrlRepo: urlRepo,
 	}
+}
 
+func (s *urlService) Create(url string, expireAt time.Time) (string, error) {
 	urlId := utils.RandStringRunes(6)
-
-	if err := repo.CreateUrl(urlId, param.Url, param.ExpireAt); err != nil {
-		resHandler.SendResponse(c, http.StatusInternalServerError, err, nil)
-		return
+	if err := s.UrlRepo.Create(urlId, url, expireAt); err != nil {
+		return "", errors.New("db create url fail " + err.Error())
 	}
-	result := UrlResponse{
-		UrlId:    urlId,
-		ShortUrl: os.Getenv("DOMAIN") + urlId,
-	}
-	resHandler.SendResponse(c, http.StatusOK, nil, result)
+	return urlId, nil
 }
