@@ -16,14 +16,16 @@ type Config struct {
 }
 
 func init() {
-	if err := godotenv.Load(); err != nil {
-		fmt.Println("Error loading .env file")
+	if os.Getenv("ENV") != "test" {
+		if err := godotenv.Load(); err != nil {
+			fmt.Println("Error loading .env file")
+		}
+		config := Config{
+			Address: os.Getenv("REDIS_HOST") + ":" + os.Getenv("REDIS_PORT"),
+			Pw:      "",
+		}
+		Client = NewRedisClient(config)
 	}
-	config := Config{
-		Address: os.Getenv("REDIS_HOST") + ":" + os.Getenv("REDIS_PORT"),
-		Pw:      "",
-	}
-	Client = NewRedisClient(config)
 }
 
 func NewRedisClient(config Config) *redis.Client {
