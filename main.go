@@ -12,7 +12,7 @@ import (
 	"time"
 	"urlshortener/api/redirect"
 	"urlshortener/api/urls"
-	repo "urlshortener/repositories"
+	urlsRepo "urlshortener/repositories/urls"
 	"urlshortener/utils/pg"
 	"urlshortener/utils/redis"
 
@@ -71,7 +71,7 @@ func setupRouter() *gin.Engine {
 	}
 	app.Use(gin.Recovery())
 
-	urlRepo := repo.NewUrlRepository(pg.Db)
+	urlRepo := urlsRepo.NewUrlRepository(pg.Db)
 	urlService := urls.NewUrlService(urlRepo)
 	cacheRepo := redis.NewRedisRepository(redis.Client)
 	redirectService := redirect.NewRedirectService(urlRepo, cacheRepo)
