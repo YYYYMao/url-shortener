@@ -16,54 +16,12 @@
 
 * create url
 
-``` flow
-start=>start: Client
-verifyParam=>operation: 參數驗證
-genUrlId=>operation: 產生 urlId
-isSuccess=>condition: 驗證參數正確
-isInsert=>condition: 資料建立正確
-respondSuccess=>operation: 成功
-response400Failure=>operation: 回傳 status 400 參數有誤
-response500Failure=>operation: 回傳 status 500 internal server error
-end=>end: Client
+<img decoding="async" src="https://i.imgur.com/2DHeKYK.png" width="50%">
 
-start->verifyParam->isSuccess
-isSuccess(yes)->genUrlId->isInsert(yes)->respondSuccess->end
-isSuccess(no)->response400Failure->end
-isInsert(no)->response500Failure->end
-```
 
 * redirect url
 
-``` flow
-start=>start: Client
-verifyUrlId=>operation: urlId 驗證
-isUrlId=>condition: 驗證urlId正確
-getFromCache=>operation: 從快取撈取資料
-isCacheExist=>condition: 是否存在
-getFromDB=>operation: 從資料庫撈取資料
-isExist=>condition: 是否存在
-checkData=>operation: 驗證資料
-checkData2=>operation: 驗證資料
-isNotCacheExpire=>condition: 是否在期限內
-isNotExpire=>condition: 是否在期限內
-respondSuccess=>operation: 成功導流
-response404Failure=>operation: 回傳 status 404 url not found
-response500Failure=>operation: 回傳 status 500 internal server error
-end=>end: Client
-
-start->verifyUrlId->isUrlId
-isUrlId(yes)->getFromCache->isCacheExist
-isCacheExist(yes)->checkData->isNotCacheExpire
-isCacheExist(no)->getFromDB->isExist
-isNotCacheExpire(yes)->respondSuccess->end
-isNotCacheExpire(no)->response404Failure->end
-isExist(yes)->isNotExpire
-isExist(no,left)->response404Failure->end
-isNotExpire(no,left)->response404Failure->end
-isNotExpire(yes)->respondSuccess->end
-isUrlId(no)->response404Failure->end
-```
+<img decoding="async" src="https://i.imgur.com/qWkszHX.png" width="50%">
 
 * 檔案架構
 
