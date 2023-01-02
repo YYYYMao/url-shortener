@@ -3,7 +3,7 @@ package urls
 import (
 	"errors"
 	"time"
-	repo "urlshortener/repositories"
+	repo "urlshortener/repositories/urls"
 	"urlshortener/utils"
 )
 

@@ -6,7 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"time"
-	repo "urlshortener/repositories"
+	repo "urlshortener/repositories/urls"
 	"urlshortener/utils"
 	"urlshortener/utils/redis"
 )

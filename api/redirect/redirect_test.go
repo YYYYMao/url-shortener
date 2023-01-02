@@ -8,8 +8,8 @@ import (
 	"net/http/httptest"
 	"testing"
 	"time"
-	repo "urlshortener/repositories"
 	"urlshortener/repositories/model"
+	repo "urlshortener/repositories/urls"
 	"urlshortener/utils"
 	"urlshortener/utils/redis"
 
