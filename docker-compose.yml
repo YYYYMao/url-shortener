@@ -2,6 +2,7 @@ version: '1'
 services:
   postgresql:
     container_name: postgresql
+    hostname: postgres
     image: postgres:12.7
     healthcheck:
       test: [ "CMD", "pg_isready", "-q", "-d", "postgres", "-U", "postgres" ]
@@ -9,7 +10,7 @@ services:
       interval: 10s
       retries: 10
     ports:
-      - "5433:5432"
+      - "5432:5432"
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
