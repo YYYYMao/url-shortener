@@ -1,0 +1,50 @@
+version: '1'
+services:
+  postgresql:
+    container_name: postgresql
+    hostname: postgres
+    image: postgres:12.7
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-q", "-d", "postgres", "-U", "postgres" ]
+      timeout: 45s
+      interval: 10s
+      retries: 10
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    networks:
+      - backend-bridge
+    restart: always
+  redis:
+    container_name: redis
+    image: redis:latest
+    ports:
+    - "6379:6379"
+    networks:
+      - backend-bridge
+    restart: always
+  url-shortener:
+    container_name: url-shortener
+    ports:
+      - "8080:8080"
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    command: ./main
+    restart: always
+    environment:
+      - ENV=develop
+    networks:
+      - backend-bridge
+    depends_on:
+      - postgresql
+      - redis
+
+networks:
+  backend-bridge:
+    driver: bridge
+
+volumes:
+  data: {}

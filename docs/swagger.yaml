@@ -1,0 +1,88 @@
+definitions:
+  resHandler.ErrResponse:
+    properties:
+      msg:
+        type: string
+      status:
+        type: integer
+    type: object
+  urls.UrlParam:
+    properties:
+      expireAt:
+        type: string
+      url:
+        type: string
+    required:
+    - expireAt
+    - url
+    type: object
+  urls.UrlResponse:
+    properties:
+      id:
+        type: string
+      shortUrl:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: Url Shortener API.
+  title: Url Shortener
+  version: "1.0"
+paths:
+  /{url_id}:
+    get:
+      description: redirect url
+      parameters:
+      - description: url_id
+        in: path
+        name: url_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "302":
+          description: Found
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/resHandler.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/resHandler.ErrResponse'
+      summary: redirect url
+      tags:
+      - urls
+  /api/v1/urls:
+    post:
+      consumes:
+      - application/json
+      description: create short url
+      parameters:
+      - description: url and expire time 2022-12-30T15:03:43.4Z
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/urls.UrlParam'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/urls.UrlResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/resHandler.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/resHandler.ErrResponse'
+      summary: create short url
+      tags:
+      - urls
+swagger: "2.0"
