@@ -16,12 +16,12 @@
 
 * create url
 
-<img decoding="async" src="https://i.imgur.com/2DHeKYK.png" width="50%">
+<img decoding="async" src="https://i.imgur.com/2DHeKYK.png" width="100%">
 
 
 * redirect url
 
-<img decoding="async" src="https://i.imgur.com/qWkszHX.png" width="50%">
+<img decoding="async" src="https://i.imgur.com/qWkszHX.png" width="100%">
 
 * 檔案架構
 
