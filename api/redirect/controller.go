@@ -24,7 +24,7 @@ type RedirectController struct {
 func (u *RedirectController) Redirect(c *gin.Context) {
 	urlId := c.Param("url_id")
 	if url, err := u.RedirectService.GetUrl(c.Request.Context(), urlId); err == nil {
-		c.Redirect(http.StatusFound, url)
+		resHandler.SendRedirect(c, url)
 		return
 	} else {
 		resHandler.SendResponse(c, http.StatusNotFound, err, nil)

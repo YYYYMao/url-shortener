@@ -22,20 +22,22 @@ type Config struct {
 }
 
 func init() {
-	if err := godotenv.Load(); err != nil {
-		fmt.Println("Error loading .env file")
+	if os.Getenv("ENV") != "test" {
+		if err := godotenv.Load(); err != nil {
+			fmt.Println("Error loading .env file")
+		}
+		PGConfig := Config{
+			Host: os.Getenv("POSTGRES_HOST"),
+			User: os.Getenv("POSTGRES_USER"),
+			Db:   os.Getenv("POSTGRES_DB"),
+			Pwd:  os.Getenv("POSTGRES_PASSWORD"),
+			Port: os.Getenv("POSTGRES_PORT"),
+		}
+		if _, err := NewPgClient(PGConfig); err != nil {
+			fmt.Println("db err", err)
+		}
+		Db.AutoMigrate(&model.Urls{})
 	}
-	PGConfig := Config{
-		Host: os.Getenv("POSTGRES_HOST"),
-		User: os.Getenv("POSTGRES_USER"),
-		Db:   os.Getenv("POSTGRES_DB"),
-		Pwd:  os.Getenv("POSTGRES_PASSWORD"),
-		Port: os.Getenv("POSTGRES_PORT"),
-	}
-	if _, err := NewPgClient(PGConfig); err != nil {
-		fmt.Println("db err", err)
-	}
-	Db.AutoMigrate(&model.Urls{})
 }
 
 func NewPgClient(dbConfig Config) (*gorm.DB, error) {

@@ -26,3 +26,7 @@ func SendResponse(c *gin.Context, code int, err error, msg interface{}) {
 	}
 	c.JSON(code, errRes)
 }
+
+func SendRedirect(c *gin.Context, url string) {
+	c.Redirect(http.StatusFound, url)
+}
