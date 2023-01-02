@@ -124,7 +124,8 @@ isUrlId(no)->response404Failure->end
       1. server auto scale
       2. 當資料多後 可以將 db 設計成讀寫分離 資料表也可依 usrId sharding
       3. 確認 url_id 是否可用避免 db collision 可用 bloom filter
-      4. 統一 logger format
+      4. logger format
+      5. 增加整合測試
 
 
 
